@@ -10,9 +10,13 @@ import restaurant.order.Order;
 import restaurant.order.OrderBuilder;
 import restaurant.strategy.DiscountStrategy;
 import restaurant.strategy.NoDiscount;
+import restaurant.observer.CustomerNotifier;
+import restaurant.observer.KitchenDisplay;
 
 public class RestaurantFacade {
     private final Map<Integer, Order> orders = new LinkedHashMap<>();
+    private final KitchenDisplay kitchen = new KitchenDisplay();
+    private final CustomerNotifier customerNotifier = new CustomerNotifier();
 
     public Order placeOrder(String customer, int table, DiscountStrategy discount, ItemRequest... requests) {
         return create(customer, table, false, discount, requests);
@@ -55,6 +59,14 @@ public class RestaurantFacade {
         return sb.toString();
     }
 
+    public KitchenDisplay getKitchenDisplay() {
+        return kitchen;
+    }
+
+    public CustomerNotifier getCustomerNotifier() {
+        return customerNotifier;
+    }
+
     private Order create(String customer, int table, boolean takeaway,
                          DiscountStrategy discount, ItemRequest[] requests) {
         OrderBuilder builder = new OrderBuilder().customer(customer).table(table).takeaway(takeaway);
@@ -67,6 +79,9 @@ public class RestaurantFacade {
         }
         Order order = builder.build();
         order.setDiscountStrategy(discount == null ? new NoDiscount() : discount);
+        order.attach(kitchen);
+        order.attach(customerNotifier);
+        order.announce();
         orders.put(order.getId(), order);
         return order;
     }
