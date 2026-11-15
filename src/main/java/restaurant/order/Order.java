@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import restaurant.model.MenuItem;
 import restaurant.model.OrderStatus;
+import restaurant.strategy.DiscountStrategy;
+import restaurant.strategy.NoDiscount;
 
 public class Order {
     private final int id;
@@ -14,6 +16,7 @@ public class Order {
     private final String note;
     private final List<MenuItem> items;
     private OrderStatus status = OrderStatus.NEW;
+    private DiscountStrategy discountStrategy = new NoDiscount();
 
     Order(int id, String customerName, int tableNumber, boolean takeaway, String note, List<MenuItem> items) {
         this.id = id;
@@ -60,8 +63,23 @@ public class Order {
         return round2(sum);
     }
 
+    public DiscountStrategy getDiscountStrategy() {
+        return discountStrategy;
+    }
+
+    public void setDiscountStrategy(DiscountStrategy discountStrategy) {
+        if (discountStrategy == null) {
+            throw new IllegalArgumentException("Discount strategy must not be null");
+        }
+        this.discountStrategy = discountStrategy;
+    }
+
+    public double getDiscountAmount() {
+        return round2(getSubtotal() - getTotal());
+    }
+
     public double getTotal() {
-        return getSubtotal();
+        return round2(discountStrategy.apply(getSubtotal()));
     }
 
     public void setStatus(OrderStatus newStatus) {
