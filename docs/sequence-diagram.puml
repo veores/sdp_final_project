@@ -1,0 +1,20 @@
+@startuml
+actor Client
+Client -> RestaurantFacade : placeOrder(...)
+RestaurantFacade -> MealFactory : create(PIZZA)
+MealFactory --> RestaurantFacade : Pizza
+RestaurantFacade -> Extra : apply(item) (CHEESE, BACON)
+Extra --> RestaurantFacade : decorated item
+RestaurantFacade -> OrderBuilder : customer().table().addItem().build()
+OrderBuilder -> Order : new Order(...)
+OrderBuilder --> RestaurantFacade : Order
+RestaurantFacade -> Order : setDiscountStrategy(discount)
+RestaurantFacade -> Order : attach(kitchen), attach(customerNotifier)
+RestaurantFacade -> Order : announce()
+Order -> KitchenDisplay : update(order, null, NEW)
+Order -> CustomerNotifier : update(order, null, NEW)
+Client -> RestaurantFacade : advance(id)
+RestaurantFacade -> Order : advance()
+Order -> KitchenDisplay : update(order, NEW, PREPARING)
+Order -> CustomerNotifier : update(order, NEW, PREPARING)
+@enduml

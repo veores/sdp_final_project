@@ -1,0 +1,60 @@
+digraph G {
+ rankdir=BT; nodesep=0.45; ranksep=0.7; fontname="DejaVu Sans"; node [fontname="DejaVu Sans" fontsize=10]; edge [fontname="DejaVu Sans" fontsize=9];
+ subgraph cluster_model { label=<<B>Shared model</B>> style="rounded,filled" fillcolor="#f2f2f2" color="#888888" fontsize=12;
+  MenuItem [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><I>&laquo;interface&raquo;</I></TD></TR><TR><TD ALIGN="CENTER"><B>MenuItem</B></TD></TR><TR><TD ALIGN="LEFT">+getName(): String<BR ALIGN="LEFT"/>+getDescription(): String<BR ALIGN="LEFT"/>+getPrice(): double<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  OrderStatus [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><I>&laquo;enumeration&raquo;</I></TD></TR><TR><TD ALIGN="CENTER"><B>OrderStatus</B></TD></TR><TR><TD ALIGN="LEFT">NEW, PREPARING, READY,<BR ALIGN="LEFT"/>DELIVERED, CANCELLED<BR ALIGN="LEFT"/>+next(): OrderStatus<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+ }
+ subgraph cluster_factory { label=<<B>FACTORY (Bekarys)</B>> style="rounded,filled" fillcolor="#f2f2f2" color="#888888" fontsize=12;
+  MealFactory [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><B>MealFactory</B></TD></TR><TR><TD ALIGN="LEFT">+create(MealType): MenuItem<BR ALIGN="LEFT"/>+create(String): MenuItem<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  MealType [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><I>&laquo;enumeration&raquo;</I></TD></TR><TR><TD ALIGN="CENTER"><B>MealType</B></TD></TR><TR><TD ALIGN="LEFT">PIZZA, BURGER, PASTA,<BR ALIGN="LEFT"/>SALAD, DRINK<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  Meal [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><I>&laquo;abstract&raquo;</I></TD></TR><TR><TD ALIGN="CENTER"><B>Meal</B></TD></TR><TR><TD ALIGN="LEFT">-name, description: String<BR ALIGN="LEFT"/>-price: double<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  Meals [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><B>Pizza, Burger, Pasta,<BR/>Salad, Drink</B></TD></TR></TABLE>>];
+ }
+ subgraph cluster_decorator { label=<<B>DECORATOR (Bekarys)</B>> style="rounded,filled" fillcolor="#f2f2f2" color="#888888" fontsize=12;
+  MealDecorator [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><I>&laquo;abstract&raquo;</I></TD></TR><TR><TD ALIGN="CENTER"><B>MealDecorator</B></TD></TR><TR><TD ALIGN="LEFT">#wrapped: MenuItem<BR ALIGN="LEFT"/>#extraLabel(): String<BR ALIGN="LEFT"/>#extraPrice(): double<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  Decs [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><B>ExtraCheese, Bacon,<BR/>Mushrooms, SpicySauce</B></TD></TR></TABLE>>];
+  Extra [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><I>&laquo;enumeration&raquo;</I></TD></TR><TR><TD ALIGN="CENTER"><B>Extra</B></TD></TR><TR><TD ALIGN="LEFT">CHEESE, BACON, MUSHROOMS,<BR ALIGN="LEFT"/>SPICY_SAUCE<BR ALIGN="LEFT"/>+apply(MenuItem): MenuItem<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+ }
+ subgraph cluster_builder { label=<<B>BUILDER (Bekarys)</B>> style="rounded,filled" fillcolor="#f2f2f2" color="#888888" fontsize=12;
+  OrderBuilder [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><B>OrderBuilder</B></TD></TR><TR><TD ALIGN="LEFT">+customer(String): OrderBuilder<BR ALIGN="LEFT"/>+table(int): OrderBuilder<BR ALIGN="LEFT"/>+takeaway(boolean): OrderBuilder<BR ALIGN="LEFT"/>+note(String): OrderBuilder<BR ALIGN="LEFT"/>+addItem(MenuItem): OrderBuilder<BR ALIGN="LEFT"/>+build(): Order<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  Order [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><B>Order</B></TD></TR><TR><TD ALIGN="LEFT">-id, tableNumber: int<BR ALIGN="LEFT"/>-customerName, note: String<BR ALIGN="LEFT"/>-status: OrderStatus<BR ALIGN="LEFT"/>+getSubtotal(): double<BR ALIGN="LEFT"/>+getTotal(): double<BR ALIGN="LEFT"/>+advance() / cancel()<BR ALIGN="LEFT"/>+attach/detach(OrderObserver)<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+ }
+ subgraph cluster_strategy { label=<<B>STRATEGY (Alisher Ospanov)</B>> style="rounded,filled" fillcolor="#f2f2f2" color="#888888" fontsize=12;
+  DiscountStrategy [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><I>&laquo;interface&raquo;</I></TD></TR><TR><TD ALIGN="CENTER"><B>DiscountStrategy</B></TD></TR><TR><TD ALIGN="LEFT">+apply(double): double<BR ALIGN="LEFT"/>+getName(): String<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  Strats [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><B>NoDiscount, PercentageDiscount,<BR/>FixedAmountDiscount, HappyHourDiscount</B></TD></TR></TABLE>>];
+ }
+ subgraph cluster_observer { label=<<B>OBSERVER (Alisher Ospanov)</B>> style="rounded,filled" fillcolor="#f2f2f2" color="#888888" fontsize=12;
+  OrderObserver [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><I>&laquo;interface&raquo;</I></TD></TR><TR><TD ALIGN="CENTER"><B>OrderObserver</B></TD></TR><TR><TD ALIGN="LEFT">+update(Order, old, new)<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  LoggingObserver [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><I>&laquo;abstract&raquo;</I></TD></TR><TR><TD ALIGN="CENTER"><B>LoggingObserver</B></TD></TR><TR><TD ALIGN="LEFT">#publish(String)<BR ALIGN="LEFT"/>+getMessages(): List<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  Obs [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><B>KitchenDisplay,<BR/>CustomerNotifier</B></TD></TR></TABLE>>];
+ }
+ subgraph cluster_facade { label=<<B>FACADE (Alisher Ospanov)</B>> style="rounded,filled" fillcolor="#f2f2f2" color="#888888" fontsize=12;
+  RestaurantFacade [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><B>RestaurantFacade</B></TD></TR><TR><TD ALIGN="LEFT">+placeOrder(...): Order<BR ALIGN="LEFT"/>+placeTakeaway(...): Order<BR ALIGN="LEFT"/>+advance(int) / cancel(int)<BR ALIGN="LEFT"/>+receipt(int): String<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+  ItemRequest [shape=plaintext label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="white"><TR><TD ALIGN="CENTER"><B>ItemRequest</B></TD></TR><TR><TD ALIGN="LEFT">-type: MealType<BR ALIGN="LEFT"/>-extras: Extra[]<BR ALIGN="LEFT"/></TD></TR></TABLE>>];
+ }
+ Meal -> MenuItem [arrowhead=empty style=dashed];
+ Meals -> Meal [arrowhead=empty];
+ MealFactory -> Meals [arrowhead=vee style=dashed label="creates"];
+ MealFactory -> MealType [arrowhead=vee style=dashed];
+ MealDecorator -> MenuItem [arrowhead=empty style=dashed];
+ MealDecorator -> MenuItem [arrowhead=odiamond taillabel="wrapped" labeldistance=2];
+ Decs -> MealDecorator [arrowhead=empty];
+ Extra -> Decs [arrowhead=vee style=dashed label="creates"];
+ OrderBuilder -> Order [arrowhead=vee style=dashed label="builds"];
+ OrderBuilder -> MenuItem [arrowhead=vee label="items"];
+ Order -> MenuItem [arrowhead=odiamond label="items"];
+ Order -> OrderStatus [arrowhead=vee];
+ Order -> DiscountStrategy [arrowhead=vee label="pricing rule"];
+ Order -> OrderObserver [arrowhead=odiamond label="observers"];
+ Strats -> DiscountStrategy [arrowhead=empty style=dashed];
+ LoggingObserver -> OrderObserver [arrowhead=empty style=dashed];
+ Obs -> LoggingObserver [arrowhead=empty];
+ RestaurantFacade -> MealFactory [arrowhead=vee style=dashed];
+ RestaurantFacade -> Extra [arrowhead=vee style=dashed];
+ RestaurantFacade -> OrderBuilder [arrowhead=vee style=dashed];
+ RestaurantFacade -> DiscountStrategy [arrowhead=vee style=dashed];
+ RestaurantFacade -> Obs [arrowhead=vee label="owns"];
+ RestaurantFacade -> Order [arrowhead=odiamond label="orders"];
+ RestaurantFacade -> ItemRequest [arrowhead=vee style=dashed];
+ ItemRequest -> MealType [arrowhead=vee];
+}

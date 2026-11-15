@@ -1,0 +1,59 @@
+@startuml
+skinparam classAttributeIconSize 0
+interface MenuItem { +getName(): String\n+getDescription(): String\n+getPrice(): double }
+enum OrderStatus { NEW\nPREPARING\nREADY\nDELIVERED\nCANCELLED }
+abstract class Meal
+class Pizza; class Burger; class Pasta; class Salad; class Drink
+enum MealType
+class MealFactory { +{static} create(MealType): MenuItem }
+abstract class MealDecorator { #wrapped: MenuItem }
+class ExtraCheese; class Bacon; class Mushrooms; class SpicySauce
+enum Extra { +apply(MenuItem): MenuItem }
+class OrderBuilder { +build(): Order }
+class Order { +getTotal(): double\n+advance()\n+attach(OrderObserver) }
+interface DiscountStrategy { +apply(double): double }
+class NoDiscount; class PercentageDiscount; class FixedAmountDiscount; class HappyHourDiscount
+interface OrderObserver { +update(Order, OrderStatus, OrderStatus) }
+abstract class LoggingObserver
+class KitchenDisplay; class CustomerNotifier
+class RestaurantFacade { +placeOrder(...): Order\n+advance(int)\n+receipt(int): String }
+class ItemRequest
+
+Meal ..|> MenuItem
+Pizza --|> Meal
+Burger --|> Meal
+Pasta --|> Meal
+Salad --|> Meal
+Drink --|> Meal
+MealFactory ..> MenuItem : creates
+MealFactory ..> MealType
+MealDecorator ..|> MenuItem
+MealDecorator o-- MenuItem : wrapped
+ExtraCheese --|> MealDecorator
+Bacon --|> MealDecorator
+Mushrooms --|> MealDecorator
+SpicySauce --|> MealDecorator
+Extra ..> MealDecorator : creates
+OrderBuilder ..> Order : builds
+OrderBuilder --> MenuItem
+Order o-- MenuItem
+Order --> OrderStatus
+Order --> DiscountStrategy
+Order o-- OrderObserver
+NoDiscount ..|> DiscountStrategy
+PercentageDiscount ..|> DiscountStrategy
+FixedAmountDiscount ..|> DiscountStrategy
+HappyHourDiscount ..|> DiscountStrategy
+LoggingObserver ..|> OrderObserver
+KitchenDisplay --|> LoggingObserver
+CustomerNotifier --|> LoggingObserver
+RestaurantFacade ..> MealFactory
+RestaurantFacade ..> Extra
+RestaurantFacade ..> OrderBuilder
+RestaurantFacade ..> DiscountStrategy
+RestaurantFacade --> KitchenDisplay
+RestaurantFacade --> CustomerNotifier
+RestaurantFacade o-- Order
+RestaurantFacade ..> ItemRequest
+ItemRequest --> MealType
+@enduml
