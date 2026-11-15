@@ -1,0 +1,88 @@
+package restaurant.order;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import restaurant.model.MenuItem;
+import restaurant.model.OrderStatus;
+
+public class Order {
+    private final int id;
+    private final String customerName;
+    private final int tableNumber;
+    private final boolean takeaway;
+    private final String note;
+    private final List<MenuItem> items;
+    private OrderStatus status = OrderStatus.NEW;
+
+    Order(int id, String customerName, int tableNumber, boolean takeaway, String note, List<MenuItem> items) {
+        this.id = id;
+        this.customerName = customerName;
+        this.tableNumber = tableNumber;
+        this.takeaway = takeaway;
+        this.note = note;
+        this.items = Collections.unmodifiableList(new ArrayList<>(items));
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public int getTableNumber() {
+        return tableNumber;
+    }
+
+    public boolean isTakeaway() {
+        return takeaway;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public List<MenuItem> getItems() {
+        return items;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public double getSubtotal() {
+        double sum = 0;
+        for (MenuItem item : items) {
+            sum += item.getPrice();
+        }
+        return round2(sum);
+    }
+
+    public double getTotal() {
+        return getSubtotal();
+    }
+
+    public void setStatus(OrderStatus newStatus) {
+        if (newStatus == null) {
+            throw new IllegalArgumentException("Status must not be null");
+        }
+        if (status == OrderStatus.DELIVERED || status == OrderStatus.CANCELLED) {
+            throw new IllegalStateException("Order #" + id + " is already " + status);
+        }
+        status = newStatus;
+    }
+
+    public void advance() {
+        setStatus(status.next());
+    }
+
+    public void cancel() {
+        setStatus(OrderStatus.CANCELLED);
+    }
+
+    static double round2(double value) {
+        return Math.round(value * 100.0) / 100.0;
+    }
+}
